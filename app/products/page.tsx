@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -74,7 +74,7 @@ const categories = [
   'Activewear',
 ];
 
-export default function ProductsPage() {
+function ProductList() {
   const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState('All');
 
@@ -93,10 +93,11 @@ export default function ProductsPage() {
     <div className="min-h-screen bg-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Home Button */}
-        <div className="mb-8">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
           <Link
             href="/"
-            className="inline-flex items-center text-pink-600 hover:text-pink-700"
+            className="inline-flex items-center px-4 py-2 bg-yellow-100 text-gray-800 rounded-md hover:bg-yellow-200 transition-colors"
           >
             <svg
               className="w-5 h-5 mr-2"
@@ -112,7 +113,7 @@ export default function ProductsPage() {
                 d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
               />
             </svg>
-            Back to Home
+            Home
           </Link>
         </div>
 
@@ -161,5 +162,17 @@ export default function ProductsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-xl text-gray-600">Loading products...</div>
+      </div>
+    }>
+      <ProductList />
+    </Suspense>
   );
 } 
