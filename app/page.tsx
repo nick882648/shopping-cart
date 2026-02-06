@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { MediaCarousel } from './components/MediaCarousel';
 
 const featuredProducts = [
   {
@@ -33,9 +34,37 @@ const featuredProducts = [
   },
 ];
 
+const heroCarouselItems = [
+  {
+    type: 'video' as const,
+    src: 'https://videos.pexels.com/video-files/6311592/6311592-hd_1280_720_25fps.mp4',
+    title: 'Lingerie lookbook',
+    subtitle: 'Soft lace, everyday comfort.',
+  },
+  {
+    type: 'video' as const,
+    src: 'https://videos.pexels.com/video-files/6311602/6311602-hd_1280_720_25fps.mp4',
+    title: 'Bra essentials',
+    subtitle: 'Supportive fits for every day.',
+  },
+  {
+    type: 'image' as const,
+    src: 'https://picsum.photos/1200/600?blur=1',
+    alt: 'Lingerie flatlay',
+    title: 'Kavya favourites',
+    subtitle: 'Mix, match, and feel your best.',
+  },
+];
+
 export default function Home() {
   return (
     <div className="min-h-screen">
+      <section className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+          <MediaCarousel items={heroCarouselItems} className="mb-8" />
+        </div>
+      </section>
+
       {/* Hero Section */}
       <section className="relative h-[600px] flex items-center justify-center bg-coral-50">
         <div className="absolute inset-0 bg-gradient-to-r from-coral-100/90 to-transparent" />
