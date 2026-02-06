@@ -37,8 +37,8 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-[600px] flex items-center justify-center bg-pink-50">
-        <div className="absolute inset-0 bg-gradient-to-r from-pink-100/90 to-transparent" />
+      <section className="relative h-[600px] flex items-center justify-center bg-coral-50">
+        <div className="absolute inset-0 bg-gradient-to-r from-coral-100/90 to-transparent" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
             Comfort Meets Elegance
@@ -48,7 +48,7 @@ export default function Home() {
           </p>
           <Link
             href="/products"
-            className="inline-block bg-pink-600 text-white px-8 py-3 rounded-md text-lg font-medium hover:bg-pink-700 transition-colors"
+            className="inline-block bg-coral-600 text-white px-8 py-3 rounded-md text-lg font-medium hover:bg-coral-700 transition-colors"
           >
             Shop Now
           </Link>

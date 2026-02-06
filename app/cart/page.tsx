@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '../components/Providers';
 import { useUser } from '../components/Providers';
+import { MediaCarousel } from '../components/MediaCarousel';
 import { Trash2 } from 'lucide-react';
 
 export default function CartPage() {
@@ -15,6 +16,28 @@ export default function CartPage() {
   const shipping = 5.99;
   const total = subtotal + shipping;
 
+  const promoCarouselItems = [
+    {
+      type: 'video' as const,
+      src: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
+      title: 'Fresh drops, fast checkout',
+      subtitle: 'A smoother cart experience with quick previews.',
+    },
+    {
+      type: 'video' as const,
+      src: 'https://www.w3schools.com/html/mov_bbb.mp4',
+      title: 'Limited-time essentials',
+      subtitle: 'Add your favorites before they’re gone.',
+    },
+    {
+      type: 'image' as const,
+      src: 'https://picsum.photos/1200/600?grayscale',
+      alt: 'Fashion banner',
+      title: 'Style that ships',
+      subtitle: 'Free returns on eligible items.',
+    },
+  ];
+
   if (!user) {
     return (
       <div className="min-h-screen bg-white py-12">
@@ -23,7 +46,7 @@ export default function CartPage() {
           <div className="flex justify-end mb-8">
             <Link
               href="/"
-              className="inline-flex items-center px-4 py-2 bg-yellow-100 text-gray-800 rounded-md hover:bg-yellow-200 transition-colors"
+                className="inline-flex items-center px-4 py-2 bg-coral-100 text-gray-800 rounded-md hover:bg-coral-200 transition-colors"
             >
               <svg
                 className="w-5 h-5 mr-2"
@@ -50,7 +73,7 @@ export default function CartPage() {
             <div className="space-x-4">
               <Link
                 href="/auth/sign-in"
-                className="inline-block bg-pink-600 text-white px-8 py-3 rounded-md text-lg font-medium hover:bg-pink-700 transition-colors"
+                className="inline-block bg-coral-600 text-white px-8 py-3 rounded-md text-lg font-medium hover:bg-coral-700 transition-colors"
               >
                 Sign In
               </Link>
@@ -75,7 +98,7 @@ export default function CartPage() {
           <div className="flex justify-end mb-8">
             <Link
               href="/"
-              className="inline-flex items-center px-4 py-2 bg-yellow-100 text-gray-800 rounded-md hover:bg-yellow-200 transition-colors"
+              className="inline-flex items-center px-4 py-2 bg-coral-100 text-gray-800 rounded-md hover:bg-coral-200 transition-colors"
             >
               <svg
                 className="w-5 h-5 mr-2"
@@ -98,7 +121,7 @@ export default function CartPage() {
             <h1 className="text-3xl font-bold text-gray-900 mb-8">Your Cart is Empty</h1>
             <Link
               href="/products"
-              className="inline-block bg-pink-600 text-white px-8 py-3 rounded-md text-lg font-medium hover:bg-pink-700 transition-colors"
+              className="inline-block bg-coral-600 text-white px-8 py-3 rounded-md text-lg font-medium hover:bg-coral-700 transition-colors"
             >
               Continue Shopping
             </Link>
@@ -116,7 +139,7 @@ export default function CartPage() {
           <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
           <Link
             href="/"
-            className="inline-flex items-center px-4 py-2 bg-yellow-100 text-gray-800 rounded-md hover:bg-yellow-200 transition-colors"
+            className="inline-flex items-center px-4 py-2 bg-coral-100 text-gray-800 rounded-md hover:bg-coral-200 transition-colors"
           >
             <svg
               className="w-5 h-5 mr-2"
@@ -135,6 +158,8 @@ export default function CartPage() {
             Home
           </Link>
         </div>
+
+        <MediaCarousel items={promoCarouselItems} className="mb-8" />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Cart Items */}
@@ -206,7 +231,7 @@ export default function CartPage() {
                   </div>
                 </div>
               </div>
-              <button className="w-full bg-pink-600 text-white mt-6 py-3 px-4 rounded-md font-medium hover:bg-pink-700 transition-colors">
+              <button className="w-full bg-coral-600 text-white mt-6 py-3 px-4 rounded-md font-medium hover:bg-coral-700 transition-colors">
                 Proceed to Checkout
               </button>
             </div>

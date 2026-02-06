@@ -14,27 +14,27 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center">
-              <h1 className="text-2xl font-bold text-pink-600">Elegance Essentials</h1>
+              <h1 className="text-2xl font-bold text-coral-600">Kavya</h1>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden sm:flex sm:items-center sm:space-x-8">
-            <Link href="/products" className="text-gray-600 hover:text-pink-600">
+            <Link href="/products" className="text-gray-600 hover:text-coral-600">
               Products
             </Link>
-            <Link href="/categories" className="text-gray-600 hover:text-pink-600">
+            <Link href="/categories" className="text-gray-600 hover:text-coral-600">
               Categories
             </Link>
-            <Link href="/cart" className="text-gray-600 hover:text-pink-600">
+            <Link href="/cart" className="text-gray-600 hover:text-coral-600">
               Cart
             </Link>
             {user ? (
-              <Link href="/account" className="text-gray-600 hover:text-pink-600">
+              <Link href="/account" className="text-gray-600 hover:text-coral-600">
                 Account
               </Link>
             ) : (
-              <Link href="/auth/sign-in" className="text-gray-600 hover:text-pink-600">
+              <Link href="/auth/sign-in" className="text-gray-600 hover:text-coral-600">
                 Sign In
               </Link>
             )}
@@ -44,7 +44,7 @@ export default function Navbar() {
           <div className="sm:hidden flex items-center">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-600 hover:text-pink-600"
+              className="text-gray-600 hover:text-coral-600"
             >
               <svg
                 className="h-6 w-6"
@@ -70,33 +70,33 @@ export default function Navbar() {
           <div className="pt-2 pb-3 space-y-1">
             <Link
               href="/products"
-              className="block px-3 py-2 text-gray-600 hover:text-pink-600"
+              className="block px-3 py-2 text-gray-600 hover:text-coral-600"
             >
               Products
             </Link>
             <Link
               href="/categories"
-              className="block px-3 py-2 text-gray-600 hover:text-pink-600"
+              className="block px-3 py-2 text-gray-600 hover:text-coral-600"
             >
               Categories
             </Link>
             <Link
               href="/cart"
-              className="block px-3 py-2 text-gray-600 hover:text-pink-600"
+              className="block px-3 py-2 text-gray-600 hover:text-coral-600"
             >
               Cart
             </Link>
             {user ? (
               <Link
                 href="/account"
-                className="block px-3 py-2 text-gray-600 hover:text-pink-600"
+                className="block px-3 py-2 text-gray-600 hover:text-coral-600"
               >
                 Account
               </Link>
             ) : (
               <Link
                 href="/auth/sign-in"
-                className="block px-3 py-2 text-gray-600 hover:text-pink-600"
+                className="block px-3 py-2 text-gray-600 hover:text-coral-600"
               >
                 Sign In
               </Link>

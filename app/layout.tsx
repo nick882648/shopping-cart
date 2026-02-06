@@ -9,7 +9,7 @@ import { Providers } from './components/Providers'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Elegance Essentials - Premium Women\'s Undergarments',
+  title: 'Kavya - Premium Women\'s Undergarments',
   description: 'Shop premium quality women\'s undergarments with comfort and style.',
 }
 

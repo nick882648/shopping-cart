@@ -32,7 +32,7 @@ export default function AccountPage() {
         <div className="mb-6">
           <Link
             href="/"
-            className="inline-flex items-center text-pink-600 hover:text-pink-700"
+            className="inline-flex items-center text-coral-600 hover:text-coral-700"
           >
             <svg
               className="w-5 h-5 mr-2"
@@ -92,19 +92,19 @@ export default function AccountPage() {
                 <div className="flex flex-col space-y-3">
                   <button
                     onClick={() => router.push('/account/edit')}
-                    className="inline-flex justify-center py-2 px-4 border border-pink-300 rounded-md shadow-sm text-sm font-medium text-pink-600 bg-white hover:bg-pink-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+                    className="inline-flex justify-center py-2 px-4 border border-coral-300 rounded-md shadow-sm text-sm font-medium text-coral-600 bg-white hover:bg-coral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-coral-500"
                   >
                     Edit Profile
                   </button>
                   <button
                     onClick={() => router.push('/account/change-password')}
-                    className="inline-flex justify-center py-2 px-4 border border-pink-300 rounded-md shadow-sm text-sm font-medium text-pink-600 bg-white hover:bg-pink-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+                    className="inline-flex justify-center py-2 px-4 border border-coral-300 rounded-md shadow-sm text-sm font-medium text-coral-600 bg-white hover:bg-coral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-coral-500"
                   >
                     Change Password
                   </button>
                   <button
                     onClick={handleSignOut}
-                    className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+                    className="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-coral-600 hover:bg-coral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-coral-500"
                   >
                     Sign Out
                   </button>

@@ -116,7 +116,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                     onClick={() => setSelectedSize(size)}
                     className={`py-2 text-sm font-medium rounded-md ${
                       selectedSize === size
-                        ? 'bg-pink-600 text-white'
+                        ? 'bg-coral-600 text-white'
                         : 'bg-gray-50 text-gray-900 hover:bg-gray-100'
                     }`}
                   >
@@ -136,7 +136,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                     onClick={() => setSelectedColor(color)}
                     className={`py-2 text-sm font-medium rounded-md ${
                       selectedColor === color
-                        ? 'bg-pink-600 text-white'
+                        ? 'bg-coral-600 text-white'
                         : 'bg-gray-50 text-gray-900 hover:bg-gray-100'
                     }`}
                   >
@@ -149,7 +149,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
             {/* Add to Cart Button */}
             <button
               onClick={handleAddToCart}
-              className="w-full bg-pink-600 text-white py-3 px-4 rounded-md font-medium hover:bg-pink-700 transition-colors"
+              className="w-full bg-coral-600 text-white py-3 px-4 rounded-md font-medium hover:bg-coral-700 transition-colors"
             >
               Add to Cart
             </button>

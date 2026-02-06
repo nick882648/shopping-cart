@@ -97,7 +97,7 @@ function ProductList() {
           <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
           <Link
             href="/"
-            className="inline-flex items-center px-4 py-2 bg-yellow-100 text-gray-800 rounded-md hover:bg-yellow-200 transition-colors"
+            className="inline-flex items-center px-4 py-2 bg-coral-100 text-gray-800 rounded-md hover:bg-coral-200 transition-colors"
           >
             <svg
               className="w-5 h-5 mr-2"
@@ -126,7 +126,7 @@ function ProductList() {
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 rounded-full text-sm font-medium ${
                   selectedCategory === category
-                    ? 'bg-pink-600 text-white'
+                    ? 'bg-coral-600 text-white'
                     : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                 }`}
               >
