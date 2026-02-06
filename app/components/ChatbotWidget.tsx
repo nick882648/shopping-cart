@@ -66,6 +66,9 @@ const SUGGESTIONS = [
   'How to track my order?',
 ];
 
+const WHATSAPP_NUMBER = '919315449081';
+const WHATSAPP_DISPLAY = '+91 93154 49081';
+
 export default function ChatbotWidget() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('');
@@ -117,6 +120,14 @@ export default function ChatbotWidget() {
     const trimmed = text.trim();
     if (!trimmed) return;
 
+    // Open WhatsApp chat with the query text
+    if (typeof window !== 'undefined') {
+      const base = `https://wa.me/${WHATSAPP_NUMBER}`;
+      const message = `Hi, I have a question from the Kavya website:\n\n${trimmed}`;
+      const url = `${base}?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
     const userMsg: ChatMessage = {
       id: nowId(),
       role: 'user',
@@ -124,14 +135,7 @@ export default function ChatbotWidget() {
       ts: Date.now(),
     };
 
-    const botMsg: ChatMessage = {
-      id: nowId(),
-      role: 'bot',
-      text: getBotReply(trimmed),
-      ts: Date.now(),
-    };
-
-    setMessages((prev) => [...prev, userMsg, botMsg]);
+    setMessages((prev) => [...prev, userMsg]);
     setInput('');
   };
 
@@ -150,7 +154,7 @@ export default function ChatbotWidget() {
               <MessageCircle className="h-5 w-5" />
               <div className="leading-tight">
                 <div className="font-semibold">Kavya Assist</div>
-                <div className="text-xs text-white/90">Basic help chatbot</div>
+                <div className="text-xs text-white/90">We’ll reply to your query on WhatsApp.</div>
               </div>
             </div>
             <button
