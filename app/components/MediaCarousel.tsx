@@ -28,10 +28,12 @@ export function MediaCarousel({
   items,
   className = '',
   autoAdvanceMs = 6500,
+  heightClass = 'h-48 sm:h-56 lg:h-64',
 }: {
   items: MediaCarouselItem[];
   className?: string;
   autoAdvanceMs?: number;
+  heightClass?: string;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -87,7 +89,7 @@ export function MediaCarousel({
       onFocusCapture={() => setIsPaused(true)}
       onBlurCapture={() => setIsPaused(false)}
     >
-      <div className="relative h-48 sm:h-56 lg:h-64">
+      <div className={['relative', heightClass].join(' ')}>
         <div
           className="absolute inset-0 flex transition-transform duration-500 ease-out"
           style={{ transform: `translateX(-${activeIndex * 100}%)` }}
