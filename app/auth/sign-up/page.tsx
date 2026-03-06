@@ -69,13 +69,9 @@ export default function SignUpPage() {
     const newUser: StoredUser = { name, email, password };
     saveUsers([...users, newUser]);
 
-    // Log the user in after successful sign-up
-    setUser({
-      id: email,
-      email,
-      name,
-    });
-    router.push('/');
+    // Clear any existing in-memory session and send user to sign-in
+    setUser(null);
+    router.push('/auth/sign-in');
   };
 
   return (
