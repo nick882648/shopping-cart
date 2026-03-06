@@ -5,6 +5,36 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useUser } from '../../components/Providers';
 
+type StoredUser = {
+  name: string;
+  email: string;
+  password: string;
+};
+
+const STORAGE_KEY = 'kavya_users';
+
+function loadUsers(): StoredUser[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed;
+  } catch {
+    return [];
+  }
+}
+
+function saveUsers(users: StoredUser[]) {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+  } catch {
+    // ignore storage errors
+  }
+}
+
 export default function SignUpPage() {
   const router = useRouter();
   const { setUser } = useUser();
@@ -28,11 +58,22 @@ export default function SignUpPage() {
       return;
     }
 
-    // This is a mock registration - replace with your actual registration logic
+    // Check if user already exists
+    const users = loadUsers();
+    const existing = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+    if (existing) {
+      setError('An account already exists for this email. Please sign in.');
+      return;
+    }
+
+    const newUser: StoredUser = { name, email, password };
+    saveUsers([...users, newUser]);
+
+    // Log the user in after successful sign-up
     setUser({
-      id: '1',
-      email: email,
-      name: name,
+      id: email,
+      email,
+      name,
     });
     router.push('/');
   };

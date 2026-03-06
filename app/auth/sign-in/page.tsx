@@ -5,6 +5,27 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useUser } from '../../components/Providers';
 
+type StoredUser = {
+  name: string;
+  email: string;
+  password: string;
+};
+
+const STORAGE_KEY = 'kavya_users';
+
+function loadUsers(): StoredUser[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed;
+  } catch {
+    return [];
+  }
+}
+
 export default function SignInPage() {
   const router = useRouter();
   const { setUser } = useUser();
@@ -16,18 +37,30 @@ export default function SignInPage() {
     e.preventDefault();
     setError('');
 
-    // This is a mock authentication - replace with your actual auth logic
-    if (email && password) {
-      // Simulating successful login
-      setUser({
-        id: '1',
-        email: email,
-        name: email.split('@')[0],
-      });
-      router.push('/');
-    } else {
+    if (!email || !password) {
       setError('Please fill in all fields');
+      return;
     }
+
+    const users = loadUsers();
+    const user = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+
+    if (!user) {
+      setError('No account found for this email. Please sign up first.');
+      return;
+    }
+
+    if (user.password !== password) {
+      setError('Incorrect password. Please try again.');
+      return;
+    }
+
+    setUser({
+      id: user.email,
+      email: user.email,
+      name: user.name,
+    });
+    router.push('/');
   };
 
   return (
