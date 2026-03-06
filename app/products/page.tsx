@@ -8,59 +8,63 @@ import { useSearchParams } from 'next/navigation';
 const products = [
   {
     id: '1',
-    name: 'Classic Comfort Bra',
-    price: 39.99,
-    image: 'https://picsum.photos/seed/bra1/600/600',
+    name: 'AAKRITI B CUP',
+    price: 320,
+    image: 'https://picsum.photos/seed/aakriti-b/600/600',
     category: 'bras',
-    description: 'Everyday comfort with seamless support',
-    sizes: ['32A', '32B', '34A', '34B', '36A', '36B'],
-    colors: ['Nude', 'Black', 'White'],
+    description: 'Single piece pack, classic B-cup support.',
+    sizes: ['32B', '34B', '36B', '38B'],
+    colors: ['WHITE', 'SKIN', 'BLACK'],
   },
   {
     id: '2',
-    name: 'Seamless Brief',
-    price: 19.99,
-    image: 'https://picsum.photos/seed/brief1/600/600',
-    category: 'panties',
-    description: 'No-show seamless comfort for everyday wear',
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    colors: ['Nude', 'Black', 'White'],
+    name: 'NATASHA B CUP',
+    price: 280,
+    image: 'https://picsum.photos/seed/natasha-b/600/600',
+    category: 'bras',
+    description: 'Single piece pack with soft everyday support.',
+    sizes: ['32B', '34B', '36B', '38B'],
+    colors: ['WHITE', 'SKIN', 'BLACK', 'LAVENDER', 'RANI', 'PEACH'],
   },
   {
     id: '3',
-    name: 'Lace Collection Set',
-    price: 59.99,
-    image: 'https://picsum.photos/seed/set1/600/600',
-    category: 'sets',
-    description: 'Elegant lace set for special occasions',
-    sizes: ['32A', '32B', '34A', '34B', '36A', '36B'],
-    colors: ['Black', 'Red', 'Navy'],
+    name: 'TANYA B CUP',
+    price: 175,
+    image: 'https://picsum.photos/seed/tanya-b/600/600',
+    category: 'bras',
+    description: 'Loose pcs mithai box packing, daily wear comfort.',
+    sizes: ['32B', '34B', '36B', '38B'],
+    colors: ['WHITE', 'SKIN', 'BLACK'],
   },
   {
     id: '4',
-    name: 'Cotton Essentials Pack',
-    price: 29.99,
-    image: 'https://picsum.photos/seed/cotton1/600/600',
-    category: 'basics',
-    description: 'Comfortable cotton basics for everyday wear',
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    colors: ['White', 'Grey', 'Black'],
+    name: 'SONALI',
+    price: 190,
+    image: 'https://picsum.photos/seed/sonali/600/600',
+    category: 'bras',
+    description: 'Loose pcs mithai box packing, multi-color range.',
+    sizes: ['32', '34', '36', '38'],
+    colors: ['WHITE', 'SKIN', 'BLACK', 'PISTA', 'RED BEAN', 'CARROT'],
   },
   {
     id: '5',
-    name: 'Silk Pajama Set',
-    price: 89.99,
-    image: 'https://picsum.photos/seed/sleep1/600/600',
-    category: 'sleepwear',
-    description: 'Luxurious silk pajamas for a comfortable night\'s sleep',
+    name: 'COMFORT B CUP',
+    price: 335,
+    image: 'https://picsum.photos/seed/comfort-b/600/600',
+    category: 'bras',
+    description: 'Single piece pack, cushioned comfort support.',
+    sizes: ['32B', '34B', '36B', '38B'],
+    colors: ['WHITE', 'SKIN', 'BLACK', 'MAGENTA', 'PINK', 'CARROT'],
   },
   {
     id: '6',
-    name: 'Sports Bra Pro',
-    price: 44.99,
-    image: 'https://picsum.photos/seed/active1/600/600',
-    category: 'activewear',
-    description: 'High-impact support for your workouts',
+    name: 'SECRET B CUP',
+    price: 260,
+    image: 'https://picsum.photos/seed/secret-b/600/600',
+    category: 'bras',
+    description: 'Single piece pack, premium colors for special days.',
+    sizes: ['32B', '34B', '36B', '38B'],
+    colors: ['WHITE', 'SKIN', 'BLACK', 'NUDE', 'RED BEAN', 'NAVY GREY', 'LAVENDER', 'PINK', 'BRUNETEE'],
   },
 ];
 
@@ -74,9 +78,29 @@ const categories = [
   'Activewear',
 ];
 
+const allColors = Array.from(
+  new Set(
+    products.flatMap((p) => (Array.isArray(p.colors) ? p.colors : []))
+  )
+);
+
+const allSizes = Array.from(
+  new Set(
+    products.flatMap((p) => (Array.isArray(p.sizes) ? p.sizes : []))
+  )
+);
+
+const allPrices = products.map((p) => p.price);
+const MIN_PRICE = Math.min(...allPrices);
+const MAX_PRICE = Math.max(...allPrices);
+
 function ProductList() {
   const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedColor, setSelectedColor] = useState<string | 'All'>('All');
+  const [selectedSize, setSelectedSize] = useState<string | 'All'>('All');
+  const [minPrice, setMinPrice] = useState(MIN_PRICE);
+  const [maxPrice, setMaxPrice] = useState(MAX_PRICE);
 
   useEffect(() => {
     const category = searchParams.get('category');
@@ -85,9 +109,23 @@ function ProductList() {
     }
   }, [searchParams]);
 
-  const filteredProducts = selectedCategory === 'All'
-    ? products
-    : products.filter(product => product.category === selectedCategory.toLowerCase());
+  const filteredProducts = products
+    .filter((product) =>
+      selectedCategory === 'All'
+        ? true
+        : product.category === selectedCategory.toLowerCase()
+    )
+    .filter((product) =>
+      selectedColor === 'All'
+        ? true
+        : Array.isArray(product.colors) && product.colors.includes(selectedColor)
+    )
+    .filter((product) =>
+      selectedSize === 'All'
+        ? true
+        : Array.isArray(product.sizes) && product.sizes.includes(selectedSize)
+    )
+    .filter((product) => product.price >= minPrice && product.price <= maxPrice);
 
   return (
     <div className="min-h-screen bg-white py-12">
@@ -117,8 +155,9 @@ function ProductList() {
           </Link>
         </div>
 
-        {/* Category Filters */}
-        <div className="mb-8">
+        {/* Filters */}
+        <div className="mb-8 space-y-4">
+          {/* Category Pills */}
           <div className="flex flex-wrap gap-2">
             {categories.map((category) => (
               <button
@@ -133,6 +172,80 @@ function ProductList() {
                 {category}
               </button>
             ))}
+          </div>
+
+          {/* Advanced filters: price, color, size */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 rounded-lg p-4">
+            {/* Price range */}
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-2">Price range (₹)</p>
+              <div className="flex items-center gap-2 text-sm">
+                <input
+                  type="number"
+                  min={MIN_PRICE}
+                  max={maxPrice}
+                  value={minPrice}
+                  onChange={(e) => {
+                    const v = Number(e.target.value) || MIN_PRICE;
+                    setMinPrice(Math.min(Math.max(MIN_PRICE, v), maxPrice));
+                  }}
+                  className="w-24 rounded-md border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-coral-500 focus:border-coral-500"
+                />
+                <span className="text-gray-500">to</span>
+                <input
+                  type="number"
+                  min={minPrice}
+                  max={MAX_PRICE}
+                  value={maxPrice}
+                  onChange={(e) => {
+                    const v = Number(e.target.value) || MAX_PRICE;
+                    setMaxPrice(Math.max(Math.min(MAX_PRICE, v), minPrice));
+                  }}
+                  className="w-24 rounded-md border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-coral-500 focus:border-coral-500"
+                />
+              </div>
+              <p className="mt-1 text-xs text-gray-500">
+                From ₹{MIN_PRICE} to ₹{MAX_PRICE}
+              </p>
+            </div>
+
+            {/* Color filter */}
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-2">Color</p>
+              <select
+                value={selectedColor}
+                onChange={(e) =>
+                  setSelectedColor(e.target.value === 'All' ? 'All' : e.target.value)
+                }
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-coral-500 focus:border-coral-500"
+              >
+                <option value="All">All colors</option>
+                {allColors.map((color) => (
+                  <option key={color} value={color}>
+                    {color}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Size filter */}
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-2">Size</p>
+              <select
+                value={selectedSize}
+                onChange={(e) =>
+                  setSelectedSize(e.target.value === 'All' ? 'All' : e.target.value)
+                }
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-coral-500 focus:border-coral-500"
+              >
+                <option value="All">All sizes</option>
+                {allSizes.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
 
@@ -153,7 +266,7 @@ function ProductList() {
                   <h3 className="text-lg font-medium text-gray-900">{product.name}</h3>
                   <p className="text-sm text-gray-500 mb-2">{product.description}</p>
                   <p className="text-lg font-semibold text-gray-900">
-                    ${product.price.toFixed(2)}
+                    ₹{product.price.toFixed(0)}
                   </p>
                 </div>
               </div>

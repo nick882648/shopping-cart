@@ -6,31 +6,31 @@ import { MediaCarousel } from './components/MediaCarousel';
 const featuredProducts = [
   {
     id: '1',
-    name: 'Classic Comfort Bra',
-    price: 39.99,
-    image: 'https://picsum.photos/seed/bra1/600/600',
+    name: 'AAKRITI B CUP',
+    price: 320,
+    image: 'https://picsum.photos/seed/aakriti-b/600/600',
     category: 'Bras',
   },
   {
     id: '2',
-    name: 'Seamless Brief',
-    price: 19.99,
-    image: 'https://picsum.photos/seed/brief1/600/600',
-    category: 'Panties',
+    name: 'NATASHA B CUP',
+    price: 280,
+    image: 'https://picsum.photos/seed/natasha-b/600/600',
+    category: 'Bras',
   },
   {
     id: '3',
-    name: 'Lace Collection Set',
-    price: 59.99,
-    image: 'https://picsum.photos/seed/set1/600/600',
-    category: 'Sets',
+    name: 'TANYA B CUP',
+    price: 175,
+    image: 'https://picsum.photos/seed/tanya-b/600/600',
+    category: 'Bras',
   },
   {
     id: '4',
-    name: 'Cotton Essentials Pack',
-    price: 29.99,
-    image: 'https://picsum.photos/seed/cotton1/600/600',
-    category: 'Basics',
+    name: 'SONALI',
+    price: 190,
+    image: 'https://picsum.photos/seed/sonali/600/600',
+    category: 'Bras',
   },
 ];
 
@@ -132,7 +132,7 @@ export default function Home() {
                 <h3 className="text-lg font-medium text-gray-900">{product.name}</h3>
                 <p className="text-sm text-gray-500">{product.category}</p>
                 <p className="mt-1 text-lg font-semibold text-gray-900">
-                  ${product.price.toFixed(2)}
+                  ₹{product.price.toFixed(0)}
                 </p>
               </Link>
             ))}
