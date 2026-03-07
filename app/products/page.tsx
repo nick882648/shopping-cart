@@ -155,102 +155,113 @@ function ProductList() {
           </Link>
         </div>
 
-        {/* Filters */}
-        <div className="mb-8 space-y-4">
-          {/* Category Pills */}
-          <div className="flex flex-wrap gap-2">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium ${
-                  selectedCategory === category
-                    ? 'bg-coral-600 text-white'
-                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
+        {/* Main Container with Left Sidebar */}
+        <div className="flex gap-8">
+          {/* Left Sidebar - Filters */}
+          <div className="w-64 flex-shrink-0">
+            <div className="bg-gray-50 rounded-lg p-6 sticky top-20">
+              <h2 className="text-lg font-bold text-gray-900 mb-6">Filters</h2>
 
-          {/* Advanced filters: price, color, size */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 rounded-lg p-4">
-            {/* Price range */}
-            <div>
-              <p className="text-sm font-medium text-gray-700 mb-2">Price range (₹)</p>
-              <div className="flex items-center gap-2 text-sm">
-                <input
-                  type="number"
-                  min={MIN_PRICE}
-                  max={maxPrice}
-                  value={minPrice}
-                  onChange={(e) => {
-                    const v = Number(e.target.value) || MIN_PRICE;
-                    setMinPrice(Math.min(Math.max(MIN_PRICE, v), maxPrice));
-                  }}
-                  className="w-24 rounded-md border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-coral-500 focus:border-coral-500"
-                />
-                <span className="text-gray-500">to</span>
-                <input
-                  type="number"
-                  min={minPrice}
-                  max={MAX_PRICE}
-                  value={maxPrice}
-                  onChange={(e) => {
-                    const v = Number(e.target.value) || MAX_PRICE;
-                    setMaxPrice(Math.max(Math.min(MAX_PRICE, v), minPrice));
-                  }}
-                  className="w-24 rounded-md border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-coral-500 focus:border-coral-500"
-                />
+              {/* Category Pills */}
+              <div className="mb-6">
+                <p className="text-sm font-medium text-gray-700 mb-3">Category</p>
+                <div className="flex flex-col gap-2">
+                  {categories.map((category) => (
+                    <button
+                      key={category}
+                      onClick={() => setSelectedCategory(category)}
+                      className={`px-4 py-2 rounded-full text-sm font-medium text-left ${
+                        selectedCategory === category
+                          ? 'bg-coral-600 text-white'
+                          : 'bg-white text-gray-800 hover:bg-gray-100 border border-gray-200'
+                      }`}
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
               </div>
-              <p className="mt-1 text-xs text-gray-500">
-                From ₹{MIN_PRICE} to ₹{MAX_PRICE}
-              </p>
-            </div>
 
-            {/* Color filter */}
-            <div>
-              <p className="text-sm font-medium text-gray-700 mb-2">Color</p>
-              <select
-                value={selectedColor}
-                onChange={(e) =>
-                  setSelectedColor(e.target.value === 'All' ? 'All' : e.target.value)
-                }
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-coral-500 focus:border-coral-500"
-              >
-                <option value="All">All colors</option>
-                {allColors.map((color) => (
-                  <option key={color} value={color}>
-                    {color}
-                  </option>
-                ))}
-              </select>
-            </div>
+              {/* Price range */}
+              <div className="mb-6 pb-6 border-b border-gray-200">
+                <p className="text-sm font-medium text-gray-700 mb-3">Price range (₹)</p>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min={MIN_PRICE}
+                      max={maxPrice}
+                      value={minPrice}
+                      onChange={(e) => {
+                        const v = Number(e.target.value) || MIN_PRICE;
+                        setMinPrice(Math.min(Math.max(MIN_PRICE, v), maxPrice));
+                      }}
+                      className="flex-1 rounded-md border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-coral-500 focus:border-coral-500"
+                    />
+                  </div>
+                  <span className="text-xs text-gray-500">to</span>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min={minPrice}
+                      max={MAX_PRICE}
+                      value={maxPrice}
+                      onChange={(e) => {
+                        const v = Number(e.target.value) || MAX_PRICE;
+                        setMaxPrice(Math.max(Math.min(MAX_PRICE, v), minPrice));
+                      }}
+                      className="flex-1 rounded-md border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-coral-500 focus:border-coral-500"
+                    />
+                  </div>
+                </div>
+                <p className="mt-2 text-xs text-gray-500">
+                  ₹{minPrice} - ₹{maxPrice}
+                </p>
+              </div>
 
-            {/* Size filter */}
-            <div>
-              <p className="text-sm font-medium text-gray-700 mb-2">Size</p>
-              <select
-                value={selectedSize}
-                onChange={(e) =>
-                  setSelectedSize(e.target.value === 'All' ? 'All' : e.target.value)
-                }
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-coral-500 focus:border-coral-500"
-              >
-                <option value="All">All sizes</option>
-                {allSizes.map((size) => (
-                  <option key={size} value={size}>
-                    {size}
-                  </option>
-                ))}
-              </select>
+              {/* Color filter */}
+              <div className="mb-6 pb-6 border-b border-gray-200">
+                <p className="text-sm font-medium text-gray-700 mb-3">Color</p>
+                <select
+                  value={selectedColor}
+                  onChange={(e) =>
+                    setSelectedColor(e.target.value === 'All' ? 'All' : e.target.value)
+                  }
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-coral-500 focus:border-coral-500"
+                >
+                  <option value="All">All colors</option>
+                  {allColors.map((color) => (
+                    <option key={color} value={color}>
+                      {color}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Size filter */}
+              <div>
+                <p className="text-sm font-medium text-gray-700 mb-3">Size</p>
+                <select
+                  value={selectedSize}
+                  onChange={(e) =>
+                    setSelectedSize(e.target.value === 'All' ? 'All' : e.target.value)
+                  }
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-coral-500 focus:border-coral-500"
+                >
+                  <option value="All">All sizes</option>
+                  {allSizes.map((size) => (
+                    <option key={size} value={size}>
+                      {size}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {/* Right Content - Products Grid */}
+          <div className="flex-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {filteredProducts.map((product) => (
             <Link key={product.id} href={`/products/${product.id}`}>
               <div className="group">
@@ -272,6 +283,8 @@ function ProductList() {
               </div>
             </Link>
           ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
