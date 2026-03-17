@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useMemo, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState, ReactNode } from 'react';
 
 // Types
 interface User {
@@ -54,12 +54,29 @@ function cartItemKey(item: Pick<CartItem, 'id' | 'size' | 'color'>) {
   return `${item.id}::${item.size ?? ''}::${item.color ?? ''}`;
 }
 
+function mergeCarts(localItems: CartItem[], serverItems: CartItem[]) {
+  const byKey = new Map<string, CartItem>();
+  for (const item of serverItems) byKey.set(cartItemKey(item), item);
+  for (const item of localItems) {
+    const key = cartItemKey(item);
+    const existing = byKey.get(key);
+    if (existing) {
+      byKey.set(key, { ...existing, quantity: existing.quantity + item.quantity });
+    } else {
+      byKey.set(key, item);
+    }
+  }
+  return Array.from(byKey.values());
+}
+
 export function Providers({ children }: ProvidersProps) {
   // User State
   const [user, setUser] = useState<User | null>(null);
 
   // Cart State
   const [cart, setCart] = useState<CartItem[]>([]);
+  const cartHydratedFromServerRef = useRef(false);
+  const lastSyncedCartJsonRef = useRef<string>('');
 
   // Restore persisted state (client-only)
   useEffect(() => {
@@ -120,6 +137,73 @@ export function Providers({ children }: ProvidersProps) {
       // ignore storage errors
     }
   }, [cart]);
+
+  // When user is logged in, load server cart and merge guest cart.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!user?.id) return;
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/cart', { method: 'GET' });
+        if (!res.ok) return;
+        const data = (await res.json().catch(() => null)) as { items?: CartItem[] } | null;
+        const serverItems = Array.isArray(data?.items) ? data!.items! : [];
+        if (cancelled) return;
+
+        let mergedToSave: CartItem[] | null = null;
+        setCart((localItems) => {
+          const merged = mergeCarts(localItems, serverItems);
+          mergedToSave = merged;
+          cartHydratedFromServerRef.current = true;
+          lastSyncedCartJsonRef.current = JSON.stringify(merged);
+          return merged;
+        });
+
+        // Persist merged cart to server
+        if (mergedToSave) {
+          await fetch('/api/cart', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items: mergedToSave }),
+          });
+        }
+      } catch {
+        // ignore
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
+
+  // Sync cart changes to server (debounced) when logged in
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!user?.id) return;
+    if (!cartHydratedFromServerRef.current) return;
+
+    const json = JSON.stringify(cart);
+    if (json === lastSyncedCartJsonRef.current) return;
+
+    const t = window.setTimeout(async () => {
+      try {
+        const res = await fetch('/api/cart', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items: cart }),
+        });
+        if (res.ok) lastSyncedCartJsonRef.current = json;
+      } catch {
+        // ignore
+      }
+    }, 500);
+
+    return () => window.clearTimeout(t);
+  }, [cart, user?.id]);
 
   // Cart Functions
   const addToCart = (item: CartItem) => {
