@@ -5,68 +5,17 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
-const products = [
-  {
-    id: '1',
-    name: 'AAKRITI B CUP',
-    price: 320,
-    image: 'https://picsum.photos/seed/aakriti-b/600/600',
-    category: 'bras',
-    description: 'Single piece pack, classic B-cup support.',
-    sizes: ['32B', '34B', '36B', '38B'],
-    colors: ['WHITE', 'SKIN', 'BLACK'],
-  },
-  {
-    id: '2',
-    name: 'NATASHA B CUP',
-    price: 280,
-    image: 'https://picsum.photos/seed/natasha-b/600/600',
-    category: 'bras',
-    description: 'Single piece pack with soft everyday support.',
-    sizes: ['32B', '34B', '36B', '38B'],
-    colors: ['WHITE', 'SKIN', 'BLACK', 'LAVENDER', 'RANI', 'PEACH'],
-  },
-  {
-    id: '3',
-    name: 'TANYA B CUP',
-    price: 175,
-    image: 'https://picsum.photos/seed/tanya-b/600/600',
-    category: 'bras',
-    description: 'Loose pcs mithai box packing, daily wear comfort.',
-    sizes: ['32B', '34B', '36B', '38B'],
-    colors: ['WHITE', 'SKIN', 'BLACK'],
-  },
-  {
-    id: '4',
-    name: 'SONALI',
-    price: 190,
-    image: 'https://picsum.photos/seed/sonali/600/600',
-    category: 'bras',
-    description: 'Loose pcs mithai box packing, multi-color range.',
-    sizes: ['32', '34', '36', '38'],
-    colors: ['WHITE', 'SKIN', 'BLACK', 'PISTA', 'RED BEAN', 'CARROT'],
-  },
-  {
-    id: '5',
-    name: 'COMFORT B CUP',
-    price: 335,
-    image: 'https://picsum.photos/seed/comfort-b/600/600',
-    category: 'bras',
-    description: 'Single piece pack, cushioned comfort support.',
-    sizes: ['32B', '34B', '36B', '38B'],
-    colors: ['WHITE', 'SKIN', 'BLACK', 'MAGENTA', 'PINK', 'CARROT'],
-  },
-  {
-    id: '6',
-    name: 'SECRET B CUP',
-    price: 260,
-    image: 'https://picsum.photos/seed/secret-b/600/600',
-    category: 'bras',
-    description: 'Single piece pack, premium colors for special days.',
-    sizes: ['32B', '34B', '36B', '38B'],
-    colors: ['WHITE', 'SKIN', 'BLACK', 'NUDE', 'RED BEAN', 'NAVY GREY', 'LAVENDER', 'PINK', 'BRUNETEE'],
-  },
-];
+type Product = {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  category: string;
+  description: string;
+  sizes: string[];
+  colors: string[];
+  stock: number;
+};
 
 const categories = [
   'All',
@@ -78,29 +27,29 @@ const categories = [
   'Activewear',
 ];
 
-const allColors = Array.from(
-  new Set(
-    products.flatMap((p) => (Array.isArray(p.colors) ? p.colors : []))
-  )
-);
-
-const allSizes = Array.from(
-  new Set(
-    products.flatMap((p) => (Array.isArray(p.sizes) ? p.sizes : []))
-  )
-);
-
-const allPrices = products.map((p) => p.price);
-const MIN_PRICE = Math.min(...allPrices);
-const MAX_PRICE = Math.max(...allPrices);
-
 function ProductList() {
   const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedColor, setSelectedColor] = useState<string | 'All'>('All');
   const [selectedSize, setSelectedSize] = useState<string | 'All'>('All');
-  const [minPrice, setMinPrice] = useState(MIN_PRICE);
-  const [maxPrice, setMaxPrice] = useState(MAX_PRICE);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
+
+  const allColors = Array.from(
+    new Set(products.flatMap((p) => (Array.isArray(p.colors) ? p.colors : [])))
+  );
+
+  const allSizes = Array.from(
+    new Set(products.flatMap((p) => (Array.isArray(p.sizes) ? p.sizes : [])))
+  );
+
+  const allPrices = products.map((p) => p.price);
+  const MIN_PRICE = allPrices.length ? Math.min(...allPrices) : 0;
+  const MAX_PRICE = allPrices.length ? Math.max(...allPrices) : 0;
+
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(0);
 
   useEffect(() => {
     const category = searchParams.get('category');
@@ -108,6 +57,33 @@ function ProductList() {
       setSelectedCategory(category.charAt(0).toUpperCase() + category.slice(1));
     }
   }, [searchParams]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      setLoadError('');
+      try {
+        const res = await fetch('/api/products');
+        const data = (await res.json().catch(() => null)) as { products?: Product[] } | null;
+        const list = Array.isArray(data?.products) ? data!.products! : [];
+        if (cancelled) return;
+        setProducts(list);
+        const prices = list.map((p) => p.price);
+        const min = prices.length ? Math.min(...prices) : 0;
+        const max = prices.length ? Math.max(...prices) : 0;
+        setMinPrice(min);
+        setMaxPrice(max);
+      } catch {
+        if (!cancelled) setLoadError('Unable to load products');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const filteredProducts = products
     .filter((product) =>
@@ -261,6 +237,16 @@ function ProductList() {
 
           {/* Right Content - Products Grid */}
           <div className="flex-1">
+            {loadError && (
+              <div className="mb-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                {loadError}
+              </div>
+            )}
+            {loading ? (
+              <div className="min-h-[240px] flex items-center justify-center text-gray-600">
+                Loading products...
+              </div>
+            ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {filteredProducts.map((product) => (
             <Link key={product.id} href={`/products/${product.id}`}>
@@ -284,6 +270,7 @@ function ProductList() {
             </Link>
           ))}
             </div>
+            )}
           </div>
         </div>
       </div>

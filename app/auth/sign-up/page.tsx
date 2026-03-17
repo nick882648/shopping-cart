@@ -5,36 +5,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useUser } from '../../components/Providers';
 
-type StoredUser = {
-  name: string;
-  email: string;
-  password: string;
-};
-
-const STORAGE_KEY = 'kavya_users';
-
-function loadUsers(): StoredUser[] {
-  if (typeof window === 'undefined') return [];
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed;
-  } catch {
-    return [];
-  }
-}
-
-function saveUsers(users: StoredUser[]) {
-  if (typeof window === 'undefined') return;
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
-  } catch {
-    // ignore storage errors
-  }
-}
-
 export default function SignUpPage() {
   const router = useRouter();
   const { setUser } = useUser();
@@ -58,20 +28,27 @@ export default function SignUpPage() {
       return;
     }
 
-    // Check if user already exists
-    const users = loadUsers();
-    const existing = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
-    if (existing) {
-      setError('An account already exists for this email. Please sign in.');
-      return;
+    try {
+      const res = await fetch('/api/auth/sign-up', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = (await res.json().catch(() => null)) as
+        | { user?: { id: string; name: string; email: string }; error?: string }
+        | null;
+
+      if (!res.ok) {
+        setError(data?.error || 'Unable to create account');
+        return;
+      }
+
+      setUser(data?.user ?? null);
+      router.push('/');
+    } catch {
+      setError('Network error. Please try again.');
     }
-
-    const newUser: StoredUser = { name, email, password };
-    saveUsers([...users, newUser]);
-
-    // Clear any existing in-memory session and send user to sign-in
-    setUser(null);
-    router.push('/auth/sign-in');
   };
 
   return (

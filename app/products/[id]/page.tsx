@@ -1,82 +1,65 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useCart } from '../../components/Providers';
 
-const products = [
-  {
-    id: '1',
-    name: 'AAKRITI B CUP',
-    price: 320,
-    image: 'https://picsum.photos/seed/aakriti-b/600/600',
-    category: 'Bras',
-    description: 'Single piece pack, classic B-cup support.',
-    sizes: ['32B', '34B', '36B', '38B'],
-    colors: ['WHITE', 'SKIN', 'BLACK'],
-  },
-  {
-    id: '2',
-    name: 'NATASHA B CUP',
-    price: 280,
-    image: 'https://picsum.photos/seed/natasha-b/600/600',
-    category: 'Bras',
-    description: 'Single piece pack with soft everyday support.',
-    sizes: ['32B', '34B', '36B', '38B'],
-    colors: ['WHITE', 'SKIN', 'BLACK', 'LAVENDER', 'RANI', 'PEACH'],
-  },
-  {
-    id: '3',
-    name: 'TANYA B CUP',
-    price: 175,
-    image: 'https://picsum.photos/seed/tanya-b/600/600',
-    category: 'Bras',
-    description: 'Loose pcs mithai box packing, daily wear comfort.',
-    sizes: ['32B', '34B', '36B', '38B'],
-    colors: ['WHITE', 'SKIN', 'BLACK'],
-  },
-  {
-    id: '4',
-    name: 'SONALI',
-    price: 190,
-    image: 'https://picsum.photos/seed/sonali/600/600',
-    category: 'Bras',
-    description: 'Loose pcs mithai box packing, multi-color range.',
-    sizes: ['32', '34', '36', '38'],
-    colors: ['WHITE', 'SKIN', 'BLACK', 'PISTA', 'RED BEAN', 'CARROT'],
-  },
-  {
-    id: '5',
-    name: 'COMFORT B CUP',
-    price: 335,
-    image: 'https://picsum.photos/seed/comfort-b/600/600',
-    category: 'Bras',
-    description: 'Single piece pack, cushioned comfort support.',
-    sizes: ['32B', '34B', '36B', '38B'],
-    colors: ['WHITE', 'SKIN', 'BLACK', 'MAGENTA', 'PINK', 'CARROT'],
-  },
-  {
-    id: '6',
-    name: 'SECRET B CUP',
-    price: 260,
-    image: 'https://picsum.photos/seed/secret-b/600/600',
-    category: 'Bras',
-    description: 'Single piece pack, premium colors for special days.',
-    sizes: ['32B', '34B', '36B', '38B'],
-    colors: ['WHITE', 'SKIN', 'BLACK', 'NUDE', 'RED BEAN', 'NAVY GREY', 'LAVENDER', 'PINK', 'BRUNETEE'],
-  },
-];
+type Product = {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  category: string;
+  description: string;
+  sizes: string[];
+  colors: string[];
+  stock: number;
+};
 
 export default function ProductPage({ params }: { params: { id: string } }) {
-  const product = products.find((p) => p.id === params.id);
   const { addToCart } = useCart();
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
 
-  if (!product) {
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      setLoadError('');
+      try {
+        const res = await fetch(`/api/products/${params.id}`);
+        const data = (await res.json().catch(() => null)) as { product?: Product; error?: string } | null;
+        if (!res.ok) {
+          if (!cancelled) setLoadError(data?.error || 'Product not found');
+          return;
+        }
+        if (!cancelled) setProduct(data?.product ?? null);
+      } catch {
+        if (!cancelled) setLoadError('Unable to load product');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [params.id]);
+
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-xl text-gray-600">Product not found</p>
+        <p className="text-xl text-gray-600">Loading product...</p>
+      </div>
+    );
+  }
+
+  if (loadError || !product) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-xl text-gray-600">{loadError || 'Product not found'}</p>
       </div>
     );
   }
@@ -98,6 +81,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
       image: product.image,
       quantity: 1,
       size: selectedSize,
+      color: selectedColor,
     });
 
     alert('Product added to cart!');

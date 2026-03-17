@@ -167,7 +167,7 @@ export default function CartPage() {
             <div className="space-y-4">
               {cart.map((item) => (
                 <div
-                  key={`${item.id}-${item.size}`}
+                  key={`${item.id}-${item.size ?? ''}-${item.color ?? ''}`}
                   className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg"
                 >
                   <div className="relative w-24 h-24 rounded-md overflow-hidden bg-gray-100">
@@ -189,7 +189,10 @@ export default function CartPage() {
                     <select
                       value={item.quantity}
                       onChange={(e) =>
-                        updateCartItemQuantity(item.id, parseInt(e.target.value))
+                        updateCartItemQuantity(
+                          `${item.id}::${item.size ?? ''}::${item.color ?? ''}`,
+                          parseInt(e.target.value)
+                        )
                       }
                       className="rounded-md border-gray-300 text-base"
                     >
@@ -200,7 +203,9 @@ export default function CartPage() {
                       ))}
                     </select>
                     <button
-                      onClick={() => removeFromCart(item.id)}
+                      onClick={() =>
+                        removeFromCart(`${item.id}::${item.size ?? ''}::${item.color ?? ''}`)
+                      }
                       className="text-gray-400 hover:text-red-500"
                     >
                       <Trash2 className="h-5 w-5" />

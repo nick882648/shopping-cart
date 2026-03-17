@@ -5,27 +5,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useUser } from '../../components/Providers';
 
-type StoredUser = {
-  name: string;
-  email: string;
-  password: string;
-};
-
-const STORAGE_KEY = 'kavya_users';
-
-function loadUsers(): StoredUser[] {
-  if (typeof window === 'undefined') return [];
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed;
-  } catch {
-    return [];
-  }
-}
-
 export default function SignInPage() {
   const router = useRouter();
   const { setUser } = useUser();
@@ -42,25 +21,32 @@ export default function SignInPage() {
       return;
     }
 
-    const users = loadUsers();
-    const user = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+    try {
+      const res = await fetch('/api/auth/sign-in', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (!user) {
-      setError('No account found for this email. Please sign up first.');
-      return;
+      const data = (await res.json().catch(() => null)) as
+        | { user?: { id: string; name: string; email: string }; error?: string }
+        | null;
+
+      if (!res.ok) {
+        setError(data?.error || 'Unable to sign in');
+        return;
+      }
+
+      if (!data?.user) {
+        setError('Unable to sign in');
+        return;
+      }
+
+      setUser(data.user);
+      router.push('/');
+    } catch {
+      setError('Network error. Please try again.');
     }
-
-    if (user.password !== password) {
-      setError('Incorrect password. Please try again.');
-      return;
-    }
-
-    setUser({
-      id: user.email,
-      email: user.email,
-      name: user.name,
-    });
-    router.push('/');
   };
 
   return (
