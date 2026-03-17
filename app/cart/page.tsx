@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '../components/Providers';
 import { useUser } from '../components/Providers';
-import { MediaCarousel } from '../components/MediaCarousel';
+import { QuotesTrail } from '../components/QuotesTrail';
 import { Trash2 } from 'lucide-react';
 
 export default function CartPage() {
@@ -16,27 +16,12 @@ export default function CartPage() {
   const shipping = 5.99;
   const total = subtotal + shipping;
 
-  const promoCarouselItems = [
-    {
-      type: 'quote' as const,
-      quote: 'Comfort is always in style.',
-      by: 'Kavya Essentials',
-    },
-    {
-      type: 'quote' as const,
-      quote: 'Soft fabrics. Strong confidence. Every day.',
-      by: 'Kavya Essentials',
-    },
-    {
-      type: 'quote' as const,
-      quote: 'Find your perfect fit—then forget you’re wearing it.',
-      by: 'Kavya Essentials',
-    },
-    {
-      type: 'quote' as const,
-      quote: 'Small upgrades, big comfort.',
-      by: 'Kavya Essentials',
-    },
+  const promoQuotes = [
+    { text: 'Comfort is always in style.', by: 'Kavya Essentials' },
+    { text: 'Soft fabrics. Strong confidence. Every day.', by: 'Kavya Essentials' },
+    { text: 'Find your perfect fit—then forget you’re wearing it.', by: 'Kavya Essentials' },
+    { text: 'Small upgrades, big comfort.', by: 'Kavya Essentials' },
+    { text: 'Breathe easy. Move freely. Feel amazing.', by: 'Kavya Essentials' },
   ];
 
   if (!user) {
@@ -160,12 +145,7 @@ export default function CartPage() {
           </Link>
         </div>
 
-        <MediaCarousel
-          items={promoCarouselItems}
-          className="mb-8"
-          autoAdvanceMs={3200}
-          pauseOnHover={false}
-        />
+        <QuotesTrail quotes={promoQuotes} className="mb-8" secondsPerLoop={18} />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Cart Items */}
