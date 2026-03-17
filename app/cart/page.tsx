@@ -18,23 +18,24 @@ export default function CartPage() {
 
   const promoCarouselItems = [
     {
-      type: 'video' as const,
-      src: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
-      title: 'Fresh drops, fast checkout',
-      subtitle: 'A smoother cart experience with quick previews.',
+      type: 'quote' as const,
+      quote: 'Comfort is always in style.',
+      by: 'Kavya Essentials',
     },
     {
-      type: 'video' as const,
-      src: 'https://www.w3schools.com/html/mov_bbb.mp4',
-      title: 'Limited-time essentials',
-      subtitle: 'Add your favorites before they’re gone.',
+      type: 'quote' as const,
+      quote: 'Soft fabrics. Strong confidence. Every day.',
+      by: 'Kavya Essentials',
     },
     {
-      type: 'image' as const,
-      src: 'https://picsum.photos/1200/600?grayscale',
-      alt: 'Fashion banner',
-      title: 'Style that ships',
-      subtitle: 'Free returns on eligible items.',
+      type: 'quote' as const,
+      quote: 'Find your perfect fit—then forget you’re wearing it.',
+      by: 'Kavya Essentials',
+    },
+    {
+      type: 'quote' as const,
+      quote: 'Small upgrades, big comfort.',
+      by: 'Kavya Essentials',
     },
   ];
 
@@ -159,7 +160,12 @@ export default function CartPage() {
           </Link>
         </div>
 
-        <MediaCarousel items={promoCarouselItems} className="mb-8" />
+        <MediaCarousel
+          items={promoCarouselItems}
+          className="mb-8"
+          autoAdvanceMs={3200}
+          pauseOnHover={false}
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Cart Items */}

@@ -17,6 +17,13 @@ export type MediaCarouselItem =
       alt: string;
       title?: string;
       subtitle?: string;
+    }
+  | {
+      type: 'quote';
+      quote: string;
+      by?: string;
+      title?: string;
+      subtitle?: string;
     };
 
 function clampIndex(idx: number, length: number) {
@@ -29,11 +36,13 @@ export function MediaCarousel({
   className = '',
   autoAdvanceMs = 6500,
   heightClass = 'h-48 sm:h-56 lg:h-64',
+  pauseOnHover = true,
 }: {
   items: MediaCarouselItem[];
   className?: string;
   autoAdvanceMs?: number;
   heightClass?: string;
+  pauseOnHover?: boolean;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -84,10 +93,10 @@ export function MediaCarousel({
         className,
       ].join(' ')}
       aria-label="Promotional media carousel"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onFocusCapture={() => setIsPaused(true)}
-      onBlurCapture={() => setIsPaused(false)}
+      onMouseEnter={pauseOnHover ? () => setIsPaused(true) : undefined}
+      onMouseLeave={pauseOnHover ? () => setIsPaused(false) : undefined}
+      onFocusCapture={pauseOnHover ? () => setIsPaused(true) : undefined}
+      onBlurCapture={pauseOnHover ? () => setIsPaused(false) : undefined}
     >
       <div className={['relative', heightClass].join(' ')}>
         <div
@@ -110,7 +119,7 @@ export function MediaCarousel({
                   preload="metadata"
                   aria-label={item.title ?? `Carousel video ${idx + 1}`}
                 />
-              ) : (
+              ) : item.type === 'image' ? (
                 <Image
                   src={item.src}
                   alt={item.alt}
@@ -118,10 +127,26 @@ export function MediaCarousel({
                   className="object-cover"
                   priority={idx === 0}
                 />
+              ) : (
+                <div
+                  className="h-full w-full flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 px-6"
+                  aria-label={item.title ?? `Quote ${idx + 1}`}
+                >
+                  <div className="max-w-3xl text-center">
+                    <p className="text-white text-lg sm:text-xl lg:text-2xl font-semibold leading-snug">
+                      “{item.quote}”
+                    </p>
+                    {item.by && (
+                      <p className="mt-3 text-white/80 text-sm sm:text-base">— {item.by}</p>
+                    )}
+                  </div>
+                </div>
               )}
 
-              <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/20 to-transparent" />
-              {(item.title || item.subtitle) && (
+              {item.type !== 'quote' && (
+                <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/20 to-transparent" />
+              )}
+              {(item.title || item.subtitle) && item.type !== 'quote' && (
                 <div className="absolute left-4 top-4 right-14 sm:left-6 sm:top-6">
                   {item.title && (
                     <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-white drop-shadow">
